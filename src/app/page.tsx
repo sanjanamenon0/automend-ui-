@@ -1,6 +1,6 @@
 'use client'
-import { useState, useEffect } from 'react'
-import { Plus, Zap, Activity, Clock, Edit2, Eye, Trash2 } from 'lucide-react'
+import { useState, useEffect, useRef } from 'react'
+import { Plus, Zap, Activity, Clock, Edit2, ChevronRight, Trash2, GitBranch } from 'lucide-react'
 import { SAMPLE_PROJECTS, Project, ProjectStatus } from '@/lib/data'
 
 const STATUS_STYLES: Record<ProjectStatus, { dot: string; badge: string; label: string }> = {
@@ -19,14 +19,14 @@ function NewProjectModal({ onClose, onCreate }: {
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
       <div className="bg-[#111827] border border-[#1e2d4a] rounded-xl p-6 w-full max-w-md shadow-2xl">
         <h2 className="text-lg font-semibold text-white mb-1">New Project</h2>
-        <p className="text-sm text-[#7b8db0] mb-5">Create a new AutoMend remediation workflow</p>
+        <p className="text-sm text-[#7b8db0] mb-5">Create a new AutoMend project</p>
         <div className="space-y-4">
           <div>
             <label className="block text-xs font-medium text-[#7b8db0] mb-1.5 uppercase tracking-wider">Project Name</label>
             <input
               value={name}
               onChange={e => setName(e.target.value)}
-              placeholder="e.g. Fraud Model Monitor"
+              placeholder="e.g. Fraud Detection API"
               className="w-full bg-[#0a0e1a] border border-[#1e2d4a] rounded-lg px-3 py-2.5 text-sm text-white placeholder-[#3a4a6b] focus:outline-none focus:border-[#2ec4b6] transition-colors"
             />
           </div>
@@ -35,7 +35,7 @@ function NewProjectModal({ onClose, onCreate }: {
             <textarea
               value={desc}
               onChange={e => setDesc(e.target.value)}
-              placeholder="What does this workflow do?"
+              placeholder="What model does this project monitor?"
               rows={3}
               className="w-full bg-[#0a0e1a] border border-[#1e2d4a] rounded-lg px-3 py-2.5 text-sm text-white placeholder-[#3a4a6b] focus:outline-none focus:border-[#2ec4b6] transition-colors resize-none"
             />
@@ -58,32 +58,121 @@ function NewProjectModal({ onClose, onCreate }: {
   )
 }
 
-function ProjectCard({ project, onEdit, onDelete }: {
-  project: Project
-  onEdit: () => void
-  onDelete: () => void
-}) {
-  const s = STATUS_STYLES[project.status]
-  const [hasWorkflow, setHasWorkflow] = useState(false)
+function WorkflowsPopover({ project, onClose }: { project: Project; onClose: () => void }) {
+  const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    setHasWorkflow(!!localStorage.getItem(`workflow-${project.id}`))
-  }, [project.id])
+    const handleClick = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) onClose()
+    }
+    document.addEventListener('mousedown', handleClick)
+    return () => document.removeEventListener('mousedown', handleClick)
+  }, [onClose])
 
   return (
-    <div className="group bg-[#111827] border border-[#1e2d4a] rounded-xl p-5 hover:border-[#2ec4b6]/40 transition-all duration-200 hover:shadow-lg hover:shadow-teal-500/5">
-      <div className="flex items-start justify-between mb-3">
-        <div className="flex items-center gap-2.5">
-          <div className={`w-2 h-2 rounded-full ${s.dot} mt-0.5`} />
-          <h3 className="font-semibold text-white text-sm group-hover:text-[#2ec4b6] transition-colors">{project.name}</h3>
-        </div>
-        <span className={`text-xs px-2 py-0.5 rounded-full border ${s.badge}`}>{s.label}</span>
+    <div ref={ref} className="absolute top-0 left-full ml-2 w-64 bg-[#111827] border border-[#1e2d4a] rounded-xl shadow-2xl z-50 overflow-hidden">
+      <div className="px-4 py-3 border-b border-[#1e2d4a]">
+        <p className="text-xs font-semibold text-white">{project.name}</p>
+        <p className="text-xs text-[#7b8db0] mt-0.5">Workflows</p>
       </div>
+
+      {project.workflows.length === 0 ? (
+        <div className="px-4 py-6 text-center">
+          <GitBranch size={20} className="text-[#3a4a6b] mx-auto mb-2" />
+          <p className="text-xs text-[#3a4a6b]">No workflows yet</p>
+        </div>
+      ) : (
+        <div className="p-2">
+          {project.workflows.map(w => (
+            <button
+              key={w.id}
+              onClick={() => { window.location.href = `/workflow/${w.id}` }}
+              className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg hover:bg-[#1e2d4a] transition-colors group text-left"
+            >
+              <div>
+                <p className="text-xs font-medium text-white group-hover:text-[#2ec4b6] transition-colors">{w.name}</p>
+                <p className="text-xs text-[#7b8db0] mt-0.5">{w.description}</p>
+              </div>
+              <Edit2 size={12} className="text-[#3a4a6b] group-hover:text-[#2ec4b6] shrink-0 ml-2 transition-colors" />
+            </button>
+          ))}
+        </div>
+      )}
+
+      <div className="px-2 pb-2">
+        <button
+          onClick={() => {
+            const newWorkflowId = `${project.id}-${Date.now()}`
+            const savedProjects = localStorage.getItem('automend-projects')
+            const projects = savedProjects ? JSON.parse(savedProjects) : []
+            const updated = projects.map((p: Project) =>
+              p.id === project.id
+                ? { ...p, workflows: [...(p.workflows || []), { id: newWorkflowId, name: 'New Workflow', description: '', createdAt: new Date().toISOString().split('T')[0] }] }
+                : p
+            )
+            localStorage.setItem('automend-projects', JSON.stringify(updated))
+            window.location.href = `/workflow/${newWorkflowId}`
+          }}
+          className="w-full flex items-center gap-2 px-3 py-2 rounded-lg border border-dashed border-[#1e2d4a] text-xs text-[#3a4a6b] hover:border-[#2ec4b6]/50 hover:text-[#2ec4b6] transition-colors"
+        >
+          <Plus size={12} /> Add New Workflow
+        </button>
+      </div>
+    </div>
+  )
+}
+
+function ProjectCard({ project, onDelete, onRename }: {
+  project: Project
+  onDelete: () => void
+  onRename: (id: string, name: string) => void
+}) {
+  const s = STATUS_STYLES[project.status]
+  const [showWorkflows, setShowWorkflows] = useState(false)
+  const [editingName, setEditingName] = useState<string | null>(null)
+
+  return (
+    <div className="relative group bg-[#111827] border border-[#1e2d4a] rounded-xl p-5 hover:border-[#2ec4b6]/40 transition-all duration-200 hover:shadow-lg hover:shadow-teal-500/5">
+      <div className="flex items-start justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <div className={`w-2 h-2 rounded-full ${s.dot} mt-0.5 shrink-0`} />
+          {editingName !== null ? (
+            <input
+              autoFocus
+              value={editingName}
+              onChange={e => setEditingName(e.target.value)}
+              onBlur={() => {
+                onRename(project.id, editingName)
+                setEditingName(null)
+              }}
+              onKeyDown={e => {
+                if (e.key === 'Enter') {
+                  onRename(project.id, editingName)
+                  setEditingName(null)
+                }
+                if (e.key === 'Escape') setEditingName(null)
+              }}
+              className="text-sm font-semibold bg-transparent border-b border-[#2ec4b6] text-white focus:outline-none w-36"
+            />
+          ) : (
+            <h3 className="font-semibold text-white text-sm">{project.name}</h3>
+          )}
+          <button
+            onClick={() => setEditingName(project.name)}
+            className="text-[#3a4a6b] hover:text-[#2ec4b6] transition-colors"
+          >
+            <Edit2 size={11} />
+          </button>
+        </div>
+        <span className={`text-xs px-2 py-0.5 rounded-full border ${s.badge} shrink-0`}>{s.label}</span>
+      </div>
+
       <p className="text-xs text-[#7b8db0] mb-4 leading-relaxed line-clamp-2">{project.description}</p>
+
       <div className="flex items-center gap-4 text-xs text-[#3a4a6b] mb-4">
         <span className="flex items-center gap-1.5">
-          <Zap size={11} className="text-[#e63946]" />
-          {project.triggerCount} trigger{project.triggerCount !== 1 ? 's' : ''}
+          <GitBranch size={11} className="text-[#2ec4b6]" />
+          {project.workflows?.length || 0} workflow{(project.workflows?.length || 0) !== 1 ? 's' : ''}
         </span>
         <span className="flex items-center gap-1.5">
           <Clock size={11} />
@@ -94,24 +183,23 @@ function ProjectCard({ project, onEdit, onDelete }: {
           {project.createdAt}
         </span>
       </div>
-      {hasWorkflow && (
-        <div className="mb-3">
-          <span className="text-xs text-[#2ec4b6] bg-[#2ec4b6]/10 border border-[#2ec4b6]/20 px-2 py-0.5 rounded-full">
-            ✓ Workflow saved
-          </span>
-        </div>
-      )}
+
       <div className="flex gap-2 pt-3 border-t border-[#1e2d4a]">
-        <button onClick={onEdit} className="flex items-center gap-1.5 text-xs text-[#7b8db0] hover:text-[#2ec4b6] transition-colors px-2 py-1 rounded hover:bg-teal-500/5">
-          <Eye size={12} /> View
-        </button>
-        <button onClick={onEdit} className="flex items-center gap-1.5 text-xs text-[#7b8db0] hover:text-[#3a86ff] transition-colors px-2 py-1 rounded hover:bg-blue-500/5">
-          <Edit2 size={12} /> Edit
+        <button
+          onClick={() => setShowWorkflows(!showWorkflows)}
+          className="flex items-center gap-1.5 text-xs text-[#7b8db0] hover:text-[#2ec4b6] transition-colors px-2 py-1 rounded hover:bg-teal-500/5"
+        >
+          <ChevronRight size={12} className={`transition-transform ${showWorkflows ? 'rotate-90' : ''}`} />
+          View Workflows
         </button>
         <button onClick={onDelete} className="flex items-center gap-1.5 text-xs text-[#7b8db0] hover:text-[#e63946] transition-colors px-2 py-1 rounded hover:bg-red-500/5 ml-auto">
           <Trash2 size={12} />
         </button>
       </div>
+
+      {showWorkflows && (
+        <WorkflowsPopover project={project} onClose={() => setShowWorkflows(false)} />
+      )}
     </div>
   )
 }
@@ -132,6 +220,11 @@ export default function HomePage() {
     }
   }, [])
 
+  const saveProjects = (updated: Project[]) => {
+    setProjects(updated)
+    localStorage.setItem('automend-projects', JSON.stringify(updated))
+  }
+
   const handleCreate = (name: string, desc: string) => {
     const newProject: Project = {
       id: String(Date.now()),
@@ -139,20 +232,21 @@ export default function HomePage() {
       description: desc,
       status: 'draft',
       createdAt: new Date().toISOString().split('T')[0],
-      triggerCount: 0,
       lastRun: null,
+      workflows: [],
     }
     const updated = [newProject, ...projects]
     localStorage.setItem('automend-projects', JSON.stringify(updated))
+    setProjects(updated)
     setShowModal(false)
-    window.location.href = `/workflow/${newProject.id}`
   }
 
   const handleDelete = (id: string) => {
-    const updated = projects.filter(p => p.id !== id)
-    setProjects(updated)
-    localStorage.setItem('automend-projects', JSON.stringify(updated))
-    localStorage.removeItem(`workflow-${id}`)
+    saveProjects(projects.filter(p => p.id !== id))
+  }
+
+  const handleRename = (id: string, name: string) => {
+    saveProjects(projects.map(p => p.id === id ? { ...p, name } : p))
   }
 
   const filtered = projects.filter(p => {
@@ -189,7 +283,7 @@ export default function HomePage() {
       <main className="max-w-6xl mx-auto px-6 py-8">
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-white mb-1">Projects</h1>
-          <p className="text-sm text-[#7b8db0]">Manage your MLOps remediation workflows</p>
+          <p className="text-sm text-[#7b8db0]">Manage your MLOps models and remediation workflows</p>
         </div>
 
         <div className="flex items-center gap-3 mb-6 flex-wrap">
@@ -225,8 +319,8 @@ export default function HomePage() {
               <ProjectCard
                 key={p.id}
                 project={p}
-                onEdit={() => { window.location.href = `/workflow/${p.id}` }}
                 onDelete={() => handleDelete(p.id)}
+                onRename={handleRename}
               />
             ))}
             <button

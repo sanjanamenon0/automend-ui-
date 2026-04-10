@@ -32,9 +32,8 @@ const CHAT_SUGGESTIONS = [
 ]
 
 export default function WorkflowPage({ params }: { params: { id: string } }) {
-  const [project, setProject] = useState({
-    id: params.id, name: '', description: '', status: 'draft'
-  })
+  const [project, setProject] = useState({ id: '', name: '', description: '', status: 'draft' })
+  const [workflowName, setWorkflowName] = useState('Untitled Workflow')
 
   const [nodes, setNodes, onNodesChange] = useNodesState(INITIAL_NODES)
   const [edges, setEdges, onEdgesChange] = useEdgesState([])
@@ -50,13 +49,25 @@ export default function WorkflowPage({ params }: { params: { id: string } }) {
   const dropRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    // Load project info
     const savedProjects = localStorage.getItem('automend-projects')
     const projects = savedProjects ? JSON.parse(savedProjects) : SAMPLE_PROJECTS
-    const found = projects.find((p: { id: string }) => p.id === params.id)
-    if (found) setProject(found)
 
-    // Load saved workflow
+    // Find which project and workflow this ID belongs to
+    let foundProject = null
+    let foundWorkflow = null
+    for (const p of projects) {
+      const w = p.workflows?.find((w: { id: string }) => w.id === params.id)
+      if (w) {
+        foundProject = p
+        foundWorkflow = w
+        break
+      }
+    }
+
+    if (foundProject) setProject(foundProject)
+    if (foundWorkflow) setWorkflowName(foundWorkflow.name)
+
+    // Load saved workflow nodes and edges
     const savedWorkflow = localStorage.getItem(`workflow-${params.id}`)
     if (savedWorkflow) {
       const data = JSON.parse(savedWorkflow)
@@ -66,15 +77,18 @@ export default function WorkflowPage({ params }: { params: { id: string } }) {
   }, [params.id])
 
   const handleSave = () => {
-    // Save workflow nodes and edges
+    // Save nodes and edges
     localStorage.setItem(`workflow-${params.id}`, JSON.stringify({ nodes, edges }))
 
-    // Update project name in projects list
+    // Update workflow name in projects
     const savedProjects = localStorage.getItem('automend-projects')
     const projects = savedProjects ? JSON.parse(savedProjects) : SAMPLE_PROJECTS
-    const updated = projects.map((p: { id: string }) =>
-      p.id === params.id ? { ...p, name: project.name } : p
-    )
+    const updated = projects.map((p: { id: string; workflows: { id: string; name: string }[] }) => ({
+      ...p,
+      workflows: p.workflows?.map((w: { id: string; name: string }) =>
+        w.id === params.id ? { ...w, name: workflowName } : w
+      ) || []
+    }))
     localStorage.setItem('automend-projects', JSON.stringify(updated))
 
     setSaveStatus('saved')
@@ -157,8 +171,9 @@ export default function WorkflowPage({ params }: { params: { id: string } }) {
           <div className="w-5 h-5 rounded bg-gradient-to-br from-[#e63946] to-[#2ec4b6] flex items-center justify-center">
             <Zap size={11} className="text-white" />
           </div>
-          <span className="text-sm font-semibold text-white">{project.name}</span>
-          <span className="text-xs text-[#3a4a6b] font-mono">/ workflow</span>
+          <span className="text-sm font-medium text-[#7b8db0]">{project.name || 'AutoMend'}</span>
+          <span className="text-xs text-[#3a4a6b] font-mono">/</span>
+          <span className="text-sm font-semibold text-white">{workflowName}</span>
         </div>
         <div className="flex items-center gap-2">
           <button
@@ -210,11 +225,11 @@ export default function WorkflowPage({ params }: { params: { id: string } }) {
               )}
 
               <div className="px-3 py-2 border-t border-[#1e2d4a]">
-                <p className="text-xs font-semibold text-[#7b8db0] uppercase tracking-wider mb-2">Project</p>
+                <p className="text-xs font-semibold text-[#7b8db0] uppercase tracking-wider mb-2">Workflow Name</p>
                 <input
-                  value={project.name}
-                  onChange={e => setProject(prev => ({ ...prev, name: e.target.value }))}
-                  placeholder="Project name"
+                  value={workflowName}
+                  onChange={e => setWorkflowName(e.target.value)}
+                  placeholder="Workflow name"
                   className="w-full bg-[#0a0e1a] border border-[#1e2d4a] rounded-md px-2 py-1.5 text-xs text-white placeholder-[#3a4a6b] focus:outline-none focus:border-[#2ec4b6] transition-colors"
                 />
               </div>

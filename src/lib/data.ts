@@ -1,51 +1,67 @@
 export type ProjectStatus = 'active' | 'paused' | 'draft'
 
+export interface Workflow {
+  id: string
+  name: string
+  description: string
+  createdAt: string
+}
+
 export interface Project {
   id: string
   name: string
   description: string
   status: ProjectStatus
   createdAt: string
-  triggerCount: number
   lastRun: string | null
+  workflows: Workflow[]
 }
 
 export const SAMPLE_PROJECTS: Project[] = [
   {
     id: '1',
-    name: 'Fraud Detection Monitor',
-    description: 'Monitors fraud model latency and triggers rollback on degradation',
+    name: 'Fraud Detection API',
+    description: 'Monitors fraud detection model health and triggers remediation',
     status: 'active',
     createdAt: '2026-01-15',
-    triggerCount: 3,
     lastRun: '2026-04-05 14:32',
+    workflows: [
+      { id: '1-1', name: 'GPU Utilization Guard', description: 'Scale down when GPU < 20%', createdAt: '2026-01-20' },
+      { id: '1-2', name: 'Latency Monitor', description: 'Rollback if latency > 500ms', createdAt: '2026-02-01' },
+      { id: '1-3', name: 'Data Drift Retrainer', description: 'Retrain on drift score > 0.5', createdAt: '2026-02-10' },
+    ]
   },
   {
     id: '2',
-    name: 'GPU Utilization Guard',
-    description: 'Scales down GPU resources when utilization drops below 20%',
+    name: 'Text Classification Model',
+    description: 'NLP model for customer support ticket classification',
     status: 'active',
     createdAt: '2026-02-01',
-    triggerCount: 2,
     lastRun: '2026-04-06 09:10',
+    workflows: [
+      { id: '2-1', name: 'Accuracy Drop Alert', description: 'Alert when accuracy < 85%', createdAt: '2026-02-05' },
+      { id: '2-2', name: 'Auto Retrainer', description: 'Trigger retraining pipeline weekly', createdAt: '2026-02-15' },
+    ]
   },
   {
     id: '3',
-    name: 'Data Drift Retrainer',
-    description: 'Triggers retraining pipeline when drift score exceeds threshold',
+    name: 'Stock Price Prediction',
+    description: 'Time series model for stock price forecasting',
     status: 'paused',
     createdAt: '2026-02-20',
-    triggerCount: 1,
     lastRun: '2026-03-28 11:45',
+    workflows: [
+      { id: '3-1', name: 'Market Hours Monitor', description: 'Pause inference outside market hours', createdAt: '2026-02-25' },
+    ]
   },
   {
     id: '4',
-    name: 'Recommendation Model HA',
-    description: 'High availability setup for recommendation service',
+    name: 'Recommendation Engine',
+    description: 'Collaborative filtering model for product recommendations',
     status: 'draft',
     createdAt: '2026-03-10',
-    triggerCount: 0,
     lastRun: null,
+    workflows: []
   },
 ]
 
