@@ -7,89 +7,69 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  background: #0a0e1a;
-  color: #e8edf5;
+  background: #0D0F1A;
+  color: #E8EDF5;
   font-family: 'DM Sans', sans-serif;
 }
 
-/* Animated grid background */
 .grid-bg {
   background-image:
-    linear-gradient(rgba(46, 196, 182, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(46, 196, 182, 0.03) 1px, transparent 1px);
+    linear-gradient(rgba(59, 78, 196, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(59, 78, 196, 0.05) 1px, transparent 1px);
   background-size: 40px 40px;
+  background-color: #0D0F1A;
 }
 
-/* Hero gradient */
 .hero-gradient {
-  background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(46, 196, 182, 0.15) 0%, transparent 60%),
-              radial-gradient(ellipse 60% 40% at 80% 50%, rgba(230, 57, 70, 0.08) 0%, transparent 50%);
+  background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(59, 78, 196, 0.25) 0%, transparent 60%),
+              radial-gradient(ellipse 50% 40% at 80% 60%, rgba(232, 147, 90, 0.08) 0%, transparent 50%);
 }
 
-/* Gradient text */
 .gradient-text {
-  background: linear-gradient(135deg, #2ec4b6 0%, #3a86ff 50%, #e63946 100%);
+  background: linear-gradient(135deg, #6B7FE8 0%, #1ABCB0 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-/* Card glow effects */
-.card-active { border-top: 2px solid #2ec4b6; }
-.card-paused { border-top: 2px solid #ffbe0b; }
-.card-draft  { border-top: 2px solid #3a4a6b; }
+.card-active { border-top: 2px solid #1ABCB0; }
+.card-paused { border-top: 2px solid #E8935A; }
+.card-draft  { border-top: 2px solid #2A3248; }
 
-/* Glassmorphism */
 .glass {
-  background: rgba(17, 24, 39, 0.8);
+  background: rgba(17, 20, 35, 0.9);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
 
-/* Floating animation */
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-6px); }
+  50% { transform: translateY(-4px); }
 }
 .float { animation: float 4s ease-in-out infinite; }
 
-/* Pulse glow */
-@keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(46, 196, 182, 0.4); }
-  50% { box-shadow: 0 0 0 8px rgba(46, 196, 182, 0); }
-}
-.pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
-
-/* Shimmer */
-@keyframes shimmer {
-  0% { background-position: -200% center; }
-  100% { background-position: 200% center; }
-}
-
-/* ReactFlow overrides */
-.react-flow__background { background: #0a0e1a; }
-.react-flow__edge-path { stroke: #2ec4b6; stroke-width: 2; }
+.react-flow__background { background: #0D0F1A; }
+.react-flow__edge-path { stroke: #3B4EC4; stroke-width: 2; }
 .react-flow__handle {
-  background: #2ec4b6 !important;
-  border: 2px solid #0a0e1a !important;
+  background: #3B4EC4 !important;
+  border: 2px solid #0D0F1A !important;
   width: 10px !important;
   height: 10px !important;
 }
 .react-flow__controls {
-  background: #111827;
-  border: 1px solid #1e2d4a;
+  background: #111423;
+  border: 1px solid #1E2440;
   border-radius: 8px;
 }
 .react-flow__controls-button {
-  background: #111827;
-  border-bottom: 1px solid #1e2d4a;
-  color: #7b8db0;
+  background: #111423;
+  border-bottom: 1px solid #1E2440;
+  color: #6B7588;
 }
-.react-flow__controls-button:hover { background: #1e2d4a; color: #e8edf5; }
-.react-flow__minimap { background: #111827 !important; border: 1px solid #1e2d4a; border-radius: 8px; }
+.react-flow__controls-button:hover { background: #1E2440; color: #E8EDF5; }
+.react-flow__minimap { background: #111423 !important; border: 1px solid #1E2440; border-radius: 8px; }
 
-/* Scrollbar */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: #0a0e1a; }
-::-webkit-scrollbar-thumb { background: #1e2d4a; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #2ec4b6; }
+::-webkit-scrollbar-track { background: #0D0F1A; }
+::-webkit-scrollbar-thumb { background: #1E2440; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #3B4EC4; }

@@ -1,12 +1,12 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
-import { Plus, Zap, Activity, Clock, Edit2, ChevronRight, Trash2, GitBranch } from 'lucide-react'
+import { Plus, Zap, Activity, Clock, Edit2, ChevronRight, ChevronDown, Trash2, GitBranch } from 'lucide-react'
 import { SAMPLE_PROJECTS, Project, ProjectStatus } from '@/lib/data'
 
 const STATUS_STYLES: Record<ProjectStatus, { dot: string; badge: string; label: string; border: string }> = {
-  active:  { dot: 'bg-[#2ec4b6]', badge: 'bg-teal-500/10 text-teal-400 border-teal-500/30', label: 'Active',  border: 'border-t-[#2ec4b6]' },
-  paused:  { dot: 'bg-[#ffbe0b]', badge: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/30', label: 'Paused', border: 'border-t-[#ffbe0b]' },
-  draft:   { dot: 'bg-gray-500',  badge: 'bg-gray-500/10 text-gray-400 border-gray-500/30', label: 'Draft',   border: 'border-t-gray-600'  },
+  active:  { dot: 'bg-[#1ABCB0]', badge: 'bg-[#1ABCB0]/10 text-[#1ABCB0] border-[#1ABCB0]/20', label: 'Active',  border: 'card-active' },
+  paused:  { dot: 'bg-[#E8935A]', badge: 'bg-[#E8935A]/10 text-[#E8935A] border-[#E8935A]/20', label: 'Paused', border: 'card-paused' },
+  draft:   { dot: 'bg-[#6B7588]', badge: 'bg-[#6B7588]/10 text-[#6B7588] border-[#6B7588]/20', label: 'Draft',   border: 'card-draft'  },
 }
 
 function NewProjectModal({ onClose, onCreate }: {
@@ -16,46 +16,46 @@ function NewProjectModal({ onClose, onCreate }: {
   const [name, setName] = useState('')
   const [desc, setDesc] = useState('')
   return (
-    <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-50">
-      <div className="bg-[#111827] border border-[#1e2d4a] rounded-2xl p-6 w-full max-w-md shadow-2xl">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-md flex items-center justify-center z-50">
+      <div className="bg-[#111423] border border-[#1E2440] rounded-2xl p-6 w-full max-w-md shadow-2xl">
         <div className="flex items-center gap-3 mb-5">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#2ec4b6] to-[#3a86ff] flex items-center justify-center">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#3B4EC4] to-[#1ABCB0] flex items-center justify-center">
             <Plus size={16} className="text-white" />
           </div>
           <div>
             <h2 className="text-base font-semibold text-white">New Project</h2>
-            <p className="text-xs text-[#7b8db0]">Create a new AutoMend project</p>
+            <p className="text-xs text-[#6B7588]">Create a new AutoMend project</p>
           </div>
         </div>
         <div className="space-y-4">
           <div>
-            <label className="block text-xs font-medium text-[#7b8db0] mb-1.5 uppercase tracking-wider">Project Name</label>
+            <label className="block text-xs font-medium text-[#6B7588] mb-1.5 uppercase tracking-wider">Project Name</label>
             <input
               value={name}
               onChange={e => setName(e.target.value)}
               placeholder="e.g. Fraud Detection API"
-              className="w-full bg-[#0a0e1a] border border-[#1e2d4a] rounded-xl px-3 py-2.5 text-sm text-white placeholder-[#3a4a6b] focus:outline-none focus:border-[#2ec4b6] transition-colors"
+              className="w-full bg-[#0D0F1A] border border-[#1E2440] rounded-xl px-3 py-2.5 text-sm text-white placeholder-[#2A3248] focus:outline-none focus:border-[#3B4EC4] transition-colors"
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-[#7b8db0] mb-1.5 uppercase tracking-wider">Description</label>
+            <label className="block text-xs font-medium text-[#6B7588] mb-1.5 uppercase tracking-wider">Description</label>
             <textarea
               value={desc}
               onChange={e => setDesc(e.target.value)}
               placeholder="What model does this project monitor?"
               rows={3}
-              className="w-full bg-[#0a0e1a] border border-[#1e2d4a] rounded-xl px-3 py-2.5 text-sm text-white placeholder-[#3a4a6b] focus:outline-none focus:border-[#2ec4b6] transition-colors resize-none"
+              className="w-full bg-[#0D0F1A] border border-[#1E2440] rounded-xl px-3 py-2.5 text-sm text-white placeholder-[#2A3248] focus:outline-none focus:border-[#3B4EC4] transition-colors resize-none"
             />
           </div>
         </div>
         <div className="flex gap-3 mt-6">
-          <button onClick={onClose} className="flex-1 px-4 py-2.5 text-sm text-[#7b8db0] border border-[#1e2d4a] rounded-xl hover:border-[#2e3d5a] hover:text-white transition-colors">
+          <button onClick={onClose} className="flex-1 px-4 py-2.5 text-sm text-[#6B7588] border border-[#1E2440] rounded-xl hover:border-[#3B4EC4] hover:text-white transition-colors">
             Cancel
           </button>
           <button
             onClick={() => name.trim() && onCreate(name, desc)}
             disabled={!name.trim()}
-            className="flex-1 px-4 py-2.5 text-sm font-medium bg-gradient-to-r from-[#2ec4b6] to-[#3a86ff] text-white rounded-xl hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition-opacity"
+            className="flex-1 px-4 py-2.5 text-sm font-medium bg-gradient-to-r from-[#3B4EC4] to-[#6B7FE8] text-white rounded-xl hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition-opacity"
           >
             Create Project
           </button>
@@ -77,16 +77,16 @@ function WorkflowsPopover({ project, onClose }: { project: Project; onClose: () 
   }, [onClose])
 
   return (
-    <div ref={ref} className="absolute top-full left-0 mt-1 w-64 bg-[#111827] border border-[#1e2d4a] rounded-xl shadow-2xl z-50 overflow-hidden">
-      <div className="px-4 py-3 border-b border-[#1e2d4a] bg-gradient-to-r from-[#2ec4b6]/5 to-transparent">
+    <div ref={ref} className="absolute top-full left-0 mt-1 w-64 bg-[#111423] border border-[#1E2440] rounded-xl shadow-2xl z-50 overflow-hidden">
+      <div className="px-4 py-3 border-b border-[#1E2440] bg-gradient-to-r from-[#3B4EC4]/5 to-transparent">
         <p className="text-xs font-semibold text-white">{project.name}</p>
-        <p className="text-xs text-[#7b8db0] mt-0.5">Workflows</p>
+        <p className="text-xs text-[#6B7588] mt-0.5">Workflows</p>
       </div>
 
       {project.workflows.length === 0 ? (
         <div className="px-4 py-6 text-center">
-          <GitBranch size={20} className="text-[#3a4a6b] mx-auto mb-2" />
-          <p className="text-xs text-[#3a4a6b]">No workflows yet</p>
+          <GitBranch size={20} className="text-[#1E2440] mx-auto mb-2" />
+          <p className="text-xs text-[#6B7588]">No workflows yet</p>
         </div>
       ) : (
         <div className="p-2">
@@ -94,13 +94,13 @@ function WorkflowsPopover({ project, onClose }: { project: Project; onClose: () 
             <button
               key={w.id}
               onClick={() => { window.location.href = `/workflow/${w.id}` }}
-              className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg hover:bg-[#1e2d4a] transition-colors group text-left"
+              className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg hover:bg-[#1E2440] transition-colors group text-left"
             >
               <div>
-                <p className="text-xs font-medium text-white group-hover:text-[#2ec4b6] transition-colors">{w.name}</p>
-                <p className="text-xs text-[#7b8db0] mt-0.5">{w.description}</p>
+                <p className="text-xs font-medium text-white group-hover:text-[#6B7FE8] transition-colors">{w.name}</p>
+                <p className="text-xs text-[#6B7588] mt-0.5">{w.description}</p>
               </div>
-              <Edit2 size={12} className="text-[#3a4a6b] group-hover:text-[#2ec4b6] shrink-0 ml-2 transition-colors" />
+              <Edit2 size={12} className="text-[#1E2440] group-hover:text-[#6B7FE8] shrink-0 ml-2 transition-colors" />
             </button>
           ))}
         </div>
@@ -120,7 +120,7 @@ function WorkflowsPopover({ project, onClose }: { project: Project; onClose: () 
             localStorage.setItem('automend-projects', JSON.stringify(updated))
             window.location.href = `/workflow/${newWorkflowId}`
           }}
-          className="w-full flex items-center gap-2 px-3 py-2 rounded-lg border border-dashed border-[#1e2d4a] text-xs text-[#3a4a6b] hover:border-[#2ec4b6]/50 hover:text-[#2ec4b6] transition-colors"
+          className="w-full flex items-center gap-2 px-3 py-2 rounded-lg border border-dashed border-[#1E2440] text-xs text-[#6B7588] hover:border-[#3B4EC4]/50 hover:text-[#6B7FE8] transition-colors"
         >
           <Plus size={12} /> Add New Workflow
         </button>
@@ -129,18 +129,20 @@ function WorkflowsPopover({ project, onClose }: { project: Project; onClose: () 
   )
 }
 
-function ProjectCard({ project, onDelete, onRename }: {
+function ProjectCard({ project, onDelete, onRename, onStatusChange }: {
   project: Project
   onDelete: () => void
   onRename: (id: string, name: string) => void
+  onStatusChange: (id: string, status: ProjectStatus) => void
 }) {
   const s = STATUS_STYLES[project.status]
   const [showWorkflows, setShowWorkflows] = useState(false)
+  const [showStatus, setShowStatus] = useState(false)
   const [editingName, setEditingName] = useState<string | null>(null)
 
   return (
-    <div className={`relative group bg-[#111827] border-t-2 ${s.border} border border-[#1e2d4a] rounded-xl p-5 hover:border-[#2ec4b6]/40 transition-all duration-200 hover:shadow-lg hover:shadow-teal-500/5`}>
-      <div className="absolute inset-0 bg-gradient-to-br from-white/[0.01] to-transparent pointer-events-none rounded-xl" />
+    <div className={`relative group bg-[#111423] ${s.border} border border-[#1E2440] rounded-xl p-5 hover:border-[#3B4EC4]/40 transition-all duration-200 hover:shadow-lg hover:shadow-[#3B4EC4]/5`}>
+      <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent pointer-events-none rounded-xl" />
 
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-2">
@@ -155,52 +157,77 @@ function ProjectCard({ project, onDelete, onRename }: {
                 if (e.key === 'Enter') { onRename(project.id, editingName); setEditingName(null) }
                 if (e.key === 'Escape') setEditingName(null)
               }}
-              className="text-sm font-semibold bg-transparent border-b border-[#2ec4b6] text-white focus:outline-none w-36"
+              className="text-sm font-semibold bg-transparent border-b border-[#3B4EC4] text-white focus:outline-none w-36"
             />
           ) : (
             <h3 className="font-semibold text-white text-sm">{project.name}</h3>
           )}
           <button
             onClick={() => setEditingName(project.name)}
-            className="text-[#3a4a6b] hover:text-[#2ec4b6] transition-colors"
+            className="text-[#1E2440] hover:text-[#6B7FE8] transition-colors"
           >
             <Edit2 size={11} />
           </button>
         </div>
-        <span className={`text-xs px-2 py-0.5 rounded-full border ${s.badge} shrink-0`}>{s.label}</span>
+
+        {/* Clickable status badge */}
+        <div className="relative shrink-0">
+          <button
+            onClick={() => setShowStatus(!showStatus)}
+            className={`text-xs px-2 py-0.5 rounded-full border ${s.badge} flex items-center gap-1`}
+          >
+            {s.label}
+            <ChevronDown size={9} />
+          </button>
+          {showStatus && (
+            <div className="absolute right-0 top-full mt-1 bg-[#111423] border border-[#1E2440] rounded-lg shadow-xl z-50 overflow-hidden w-28">
+              {(['active', 'paused', 'draft'] as ProjectStatus[]).map(status => (
+                <button
+                  key={status}
+                  onClick={() => { onStatusChange(project.id, status); setShowStatus(false) }}
+                  className={`w-full text-left px-3 py-2 text-xs capitalize hover:bg-[#1E2440] transition-colors ${
+                    project.status === status ? 'text-white font-medium' : 'text-[#6B7588]'
+                  }`}
+                >
+                  {status}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
-      <p className="text-xs text-[#7b8db0] mb-4 leading-relaxed line-clamp-2">{project.description}</p>
+      <p className="text-xs text-[#6B7588] mb-4 leading-relaxed line-clamp-2">{project.description}</p>
 
-      <div className="flex items-center gap-4 text-xs text-[#3a4a6b] mb-4">
-        <span className="flex items-center gap-1.5 bg-[#2ec4b6]/5 border border-[#2ec4b6]/10 px-2 py-1 rounded-lg">
-          <GitBranch size={10} className="text-[#2ec4b6]" />
-          <span className="text-[#2ec4b6]">{project.workflows?.length || 0}</span>
-          <span>workflow{(project.workflows?.length || 0) !== 1 ? 's' : ''}</span>
+      <div className="flex items-center gap-4 text-xs mb-4">
+        <span className="flex items-center gap-1.5 bg-[#3B4EC4]/5 border border-[#3B4EC4]/10 px-2 py-1 rounded-lg">
+          <GitBranch size={10} className="text-[#6B7FE8]" />
+          <span className="text-[#6B7FE8]">{project.workflows?.length || 0}</span>
+          <span className="text-[#6B7588]">workflow{(project.workflows?.length || 0) !== 1 ? 's' : ''}</span>
         </span>
-        <span className="flex items-center gap-1.5">
+        <span className="flex items-center gap-1.5 text-[#6B7588]">
           <Clock size={11} />
           {project.lastRun ? project.lastRun : 'Never run'}
         </span>
-        <span className="flex items-center gap-1.5">
+        <span className="flex items-center gap-1.5 text-[#6B7588]">
           <Activity size={11} />
           {project.createdAt}
         </span>
       </div>
 
-      <div className="flex gap-2 pt-3 border-t border-[#1e2d4a]">
+      <div className="flex gap-2 pt-3 border-t border-[#1E2440]">
         <button
           onClick={() => setShowWorkflows(!showWorkflows)}
           className={`flex items-center gap-1.5 text-xs font-medium transition-all px-3 py-1.5 rounded-lg ${
             showWorkflows
-              ? 'bg-[#2ec4b6]/10 text-[#2ec4b6] border border-[#2ec4b6]/20'
-              : 'text-[#7b8db0] hover:text-[#2ec4b6] hover:bg-teal-500/5'
+              ? 'bg-[#3B4EC4]/10 text-[#6B7FE8] border border-[#3B4EC4]/20'
+              : 'text-[#6B7588] hover:text-[#6B7FE8] hover:bg-[#3B4EC4]/5'
           }`}
         >
           <ChevronRight size={12} className={`transition-transform ${showWorkflows ? 'rotate-90' : ''}`} />
           View Workflows
         </button>
-        <button onClick={onDelete} className="flex items-center gap-1.5 text-xs text-[#7b8db0] hover:text-[#e63946] transition-colors px-2 py-1 rounded hover:bg-red-500/5 ml-auto">
+        <button onClick={onDelete} className="flex items-center gap-1.5 text-xs text-[#6B7588] hover:text-[#E85A6B] transition-colors px-2 py-1 rounded hover:bg-red-500/5 ml-auto">
           <Trash2 size={12} />
         </button>
       </div>
@@ -249,12 +276,14 @@ export default function HomePage() {
     setShowModal(false)
   }
 
-  const handleDelete = (id: string) => {
-    saveProjects(projects.filter(p => p.id !== id))
-  }
+  const handleDelete = (id: string) => saveProjects(projects.filter(p => p.id !== id))
 
   const handleRename = (id: string, name: string) => {
     saveProjects(projects.map(p => p.id === id ? { ...p, name } : p))
+  }
+
+  const handleStatusChange = (id: string, status: ProjectStatus) => {
+    saveProjects(projects.map(p => p.id === id ? { ...p, status } : p))
   }
 
   const filtered = projects.filter(p => {
@@ -271,18 +300,18 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0e1a] grid-bg">
-      <header className="border-b border-[#1e2d4a] px-6 py-3 flex items-center justify-between sticky top-0 z-10 glass">
+    <div className="min-h-screen bg-[#0D0F1A] grid-bg">
+      <header className="border-b border-[#1E2440] px-6 py-3 flex items-center justify-between sticky top-0 z-10 glass">
         <div className="flex items-center gap-3">
-          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#e63946] to-[#2ec4b6] flex items-center justify-center">
+          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#3B4EC4] to-[#1ABCB0] flex items-center justify-center float">
             <Zap size={14} className="text-white" />
           </div>
           <span className="font-bold text-white tracking-tight">Auto<span className="gradient-text">Mend</span></span>
-          <span className="text-[#3a4a6b] text-xs font-mono bg-[#1e2d4a] px-2 py-0.5 rounded-full">v1.0</span>
+          <span className="text-[#6B7588] text-xs font-mono bg-[#1E2440] px-2 py-0.5 rounded-full">v1.0</span>
         </div>
         <button
           onClick={() => setShowModal(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#2ec4b6] to-[#3a86ff] text-white text-sm font-medium rounded-xl hover:opacity-90 transition-opacity shadow-lg shadow-teal-500/20"
+          className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#3B4EC4] to-[#6B7FE8] text-white text-sm font-medium rounded-xl hover:opacity-90 transition-opacity shadow-lg shadow-[#3B4EC4]/20"
         >
           <Plus size={15} /> New Project
         </button>
@@ -292,7 +321,7 @@ export default function HomePage() {
         <h1 className="text-3xl font-bold text-white mb-3">
           From Alert to Action <span className="gradient-text">in Seconds</span>
         </h1>
-        <p className="text-sm text-[#7b8db0] max-w-lg mx-auto">
+        <p className="text-sm text-[#6B7588] max-w-lg mx-auto">
           AutoMend automatically detects anomalies in your ML models and triggers the<br />
           right remediation workflow — no manual intervention needed.
         </p>
@@ -304,7 +333,7 @@ export default function HomePage() {
           ].map(stat => (
             <div key={stat.label} className="flex items-center gap-2">
               <span className="text-xl font-bold text-white">{stat.value}</span>
-              <span className="text-xs text-[#7b8db0]">{stat.label}</span>
+              <span className="text-xs text-[#6B7588]">{stat.label}</span>
             </div>
           ))}
         </div>
@@ -312,15 +341,15 @@ export default function HomePage() {
 
       <main className="max-w-6xl mx-auto px-6 pb-12">
         <div className="flex items-center gap-3 mb-6 flex-wrap">
-          <div className="flex gap-1 bg-[#111827] border border-[#1e2d4a] rounded-xl p-1">
+          <div className="flex gap-1 bg-[#111423] border border-[#1E2440] rounded-xl p-1">
             {(['all', 'active', 'paused', 'draft'] as const).map(f => (
               <button
                 key={f}
                 onClick={() => setFilter(f)}
                 className={`px-3 py-1.5 text-xs rounded-lg capitalize transition-all ${
                   filter === f
-                    ? 'bg-gradient-to-r from-[#2ec4b6]/20 to-[#3a86ff]/20 text-white border border-[#2ec4b6]/20'
-                    : 'text-[#7b8db0] hover:text-white'
+                    ? 'bg-gradient-to-r from-[#3B4EC4]/20 to-[#6B7FE8]/20 text-white border border-[#3B4EC4]/20'
+                    : 'text-[#6B7588] hover:text-white'
                 }`}
               >
                 {f} <span className="opacity-60 ml-1">{counts[f]}</span>
@@ -331,18 +360,18 @@ export default function HomePage() {
             value={search}
             onChange={e => setSearch(e.target.value)}
             placeholder="Search projects..."
-            className="flex-1 max-w-xs bg-[#111827] border border-[#1e2d4a] rounded-xl px-3 py-2 text-sm text-white placeholder-[#3a4a6b] focus:outline-none focus:border-[#2ec4b6] transition-colors"
+            className="flex-1 max-w-xs bg-[#111423] border border-[#1E2440] rounded-xl px-3 py-2 text-sm text-white placeholder-[#2A3248] focus:outline-none focus:border-[#3B4EC4] transition-colors"
           />
-          <span className="text-xs text-[#3a4a6b] ml-auto">{filtered.length} project{filtered.length !== 1 ? 's' : ''}</span>
+          <span className="text-xs text-[#6B7588] ml-auto">{filtered.length} project{filtered.length !== 1 ? 's' : ''}</span>
         </div>
 
         {filtered.length === 0 ? (
-          <div className="text-center py-20 text-[#3a4a6b]">
-            <div className="w-16 h-16 rounded-2xl border border-dashed border-[#1e2d4a] flex items-center justify-center mx-auto mb-4">
-              <Zap size={24} className="opacity-30" />
+          <div className="text-center py-20">
+            <div className="w-16 h-16 rounded-2xl border border-dashed border-[#1E2440] flex items-center justify-center mx-auto mb-4">
+              <Zap size={24} className="text-[#1E2440]" />
             </div>
-            <p className="text-sm font-medium text-[#7b8db0]">No projects found</p>
-            <p className="text-xs mt-1">Try adjusting your search or filters</p>
+            <p className="text-sm font-medium text-[#6B7588]">No projects found</p>
+            <p className="text-xs mt-1 text-[#1E2440]">Try adjusting your search or filters</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -352,13 +381,14 @@ export default function HomePage() {
                 project={p}
                 onDelete={() => handleDelete(p.id)}
                 onRename={handleRename}
+                onStatusChange={handleStatusChange}
               />
             ))}
             <button
               onClick={() => setShowModal(true)}
-              className="border border-dashed border-[#1e2d4a] rounded-xl p-5 flex flex-col items-center justify-center gap-3 text-[#3a4a6b] hover:border-[#2ec4b6]/50 hover:text-[#2ec4b6] transition-all min-h-[180px] group"
+              className="border border-dashed border-[#1E2440] rounded-xl p-5 flex flex-col items-center justify-center gap-3 text-[#6B7588] hover:border-[#3B4EC4]/50 hover:text-[#6B7FE8] transition-all min-h-[180px] group"
             >
-              <div className="w-12 h-12 rounded-2xl border border-dashed border-current flex items-center justify-center group-hover:scale-110 group-hover:bg-[#2ec4b6]/10 transition-all">
+              <div className="w-12 h-12 rounded-2xl border border-dashed border-current flex items-center justify-center group-hover:scale-110 group-hover:bg-[#3B4EC4]/10 transition-all">
                 <Plus size={20} />
               </div>
               <div className="text-center">
