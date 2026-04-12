@@ -21,30 +21,36 @@ const scaleIn: Variants = {
 }
 
 // ─── Status config ────────────────────────────────────────────────────────────
-const STATUS_STYLES: Record<ProjectStatus, { dot: string; badge: string; label: string; accentGradient: string; hoverShadow: string; glowColor: string }> = {
+const STATUS_STYLES: Record<ProjectStatus, { dot: string; badge: string; label: string; barColor: string; chipBg: string; chipColor: string; hoverShadow: string; glowColor: string }> = {
   active: {
-    dot:            'bg-[#4ADE80]',
-    badge:          'bg-[#0a2e1a] text-[#4ADE80] border-[#1a4a2a]',
-    label:          'Active',
-    accentGradient: 'linear-gradient(90deg, transparent, #4ADE80 50%, transparent)',
-    hoverShadow:    '0 8px 40px rgba(74,222,128,0.18), 0 2px 12px rgba(74,222,128,0.10)',
-    glowColor:      'rgba(74,222,128,0.10)',
+    dot:        'bg-[#4ADE80]',
+    badge:      'bg-[#0a2e1a] text-[#4ADE80] border-[#1a4a2a]',
+    label:      'Active',
+    barColor:   '#4ADE80',
+    chipBg:     'rgba(74,222,128,0.10)',
+    chipColor:  '#4ADE80',
+    hoverShadow: '0 8px 40px rgba(74,222,128,0.18), 0 2px 12px rgba(74,222,128,0.10)',
+    glowColor:  'rgba(74,222,128,0.10)',
   },
   paused: {
-    dot:            'bg-[#E8935A]',
-    badge:          'bg-[#2e1a0a] text-[#E8935A] border-[#4a2a1a]',
-    label:          'Paused',
-    accentGradient: 'linear-gradient(90deg, transparent, #E8935A 50%, transparent)',
-    hoverShadow:    '0 8px 40px rgba(232,147,90,0.18), 0 2px 12px rgba(232,147,90,0.10)',
-    glowColor:      'rgba(232,147,90,0.10)',
+    dot:        'bg-[#E8935A]',
+    badge:      'bg-[#2e1a0a] text-[#E8935A] border-[#4a2a1a]',
+    label:      'Paused',
+    barColor:   '#E8935A',
+    chipBg:     'rgba(232,147,90,0.10)',
+    chipColor:  '#E8935A',
+    hoverShadow: '0 8px 40px rgba(232,147,90,0.18), 0 2px 12px rgba(232,147,90,0.10)',
+    glowColor:  'rgba(232,147,90,0.10)',
   },
   draft: {
-    dot:            'bg-[#444444]',
-    badge:          'bg-[#1a1a1a] text-[#666] border-[#2a2a2a]',
-    label:          'Draft',
-    accentGradient: 'linear-gradient(90deg, transparent, #444444 50%, transparent)',
-    hoverShadow:    '0 8px 40px rgba(100,100,100,0.12), 0 2px 12px rgba(100,100,100,0.06)',
-    glowColor:      'rgba(100,100,100,0.06)',
+    dot:        'bg-[#444444]',
+    badge:      'bg-[#1a1a1a] text-[#666] border-[#2a2a2a]',
+    label:      'Draft',
+    barColor:   '#333333',
+    chipBg:     'rgba(100,100,100,0.08)',
+    chipColor:  '#555555',
+    hoverShadow: '0 8px 40px rgba(100,100,100,0.12), 0 2px 12px rgba(100,100,100,0.06)',
+    glowColor:  'rgba(100,100,100,0.06)',
   },
 }
 
@@ -258,16 +264,15 @@ function ProjectCard({ project, onDelete, onRename, onStatusChange }: {
         }}
       />
 
-      {/* Status accent line */}
+      {/* Left accent bar */}
       <div
-        className="absolute top-0 left-0 right-0 h-px rounded-t-xl"
-        style={{ background: s.accentGradient }}
+        className="absolute top-0 left-0 bottom-0 w-[3px] rounded-l-xl"
+        style={{ background: `linear-gradient(180deg, ${s.barColor} 0%, transparent 100%)` }}
       />
 
       {/* Header */}
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-2">
-          <div className={`w-2 h-2 rounded-full ${s.dot} mt-0.5 shrink-0`} />
           {editingName !== null ? (
             <input
               autoFocus
@@ -291,12 +296,14 @@ function ProjectCard({ project, onDelete, onRename, onStatusChange }: {
           </button>
         </div>
 
-        {/* Status badge + dropdown */}
+        {/* Status chip + dropdown */}
         <div className="relative shrink-0">
           <button
             onClick={() => setShowStatus(!showStatus)}
-            className={`text-xs px-2 py-0.5 rounded-full border ${s.badge} flex items-center gap-1`}
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium transition-colors"
+            style={{ background: s.chipBg, color: s.chipColor, border: `1px solid ${s.chipColor}22` }}
           >
+            <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: s.chipColor }} />
             {s.label}
             <ChevronDown size={9} />
           </button>
@@ -441,35 +448,105 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen" style={{ background: '#080808' }}>
+    <div className="min-h-screen grain" style={{ background: '#080808' }}>
+
+      {/* ── Ambient aurora blobs ─────────────────────────────────────── */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none" style={{ zIndex: 0 }}>
+        {/* Blob 1 — indigo/periwinkle, top-left */}
+        <div
+          className="aurora-1 absolute rounded-full"
+          style={{
+            width: 800,
+            height: 600,
+            top: '-10%',
+            left: '-15%',
+            background: 'radial-gradient(ellipse, rgba(107,127,232,0.35) 0%, rgba(107,127,232,0.12) 40%, transparent 70%)',
+            filter: 'blur(80px)',
+          }}
+        />
+        {/* Blob 2 — saffron, bottom-right */}
+        <div
+          className="aurora-2 absolute rounded-full"
+          style={{
+            width: 700,
+            height: 600,
+            bottom: '-15%',
+            right: '-15%',
+            background: 'radial-gradient(ellipse, rgba(232,147,90,0.30) 0%, rgba(232,147,90,0.10) 40%, transparent 70%)',
+            filter: 'blur(80px)',
+          }}
+        />
+        {/* Blob 3 — violet, center */}
+        <div
+          className="aurora-3 absolute rounded-full"
+          style={{
+            width: 600,
+            height: 500,
+            top: '25%',
+            left: '35%',
+            background: 'radial-gradient(ellipse, rgba(192,132,252,0.20) 0%, rgba(192,132,252,0.06) 40%, transparent 70%)',
+            filter: 'blur(80px)',
+          }}
+        />
+      </div>
 
       {/* ── Nav ─────────────────────────────────────────────────────── */}
       <header
-        className="px-6 py-3 flex items-center justify-between sticky top-0 z-10"
-        style={{ background: 'rgba(8,8,8,0.95)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', borderBottom: '1px solid #1f1f1f' }}
+        className="px-6 py-3 flex items-center justify-between sticky top-0 z-20"
+        style={{
+          background: 'rgba(8,8,8,0.85)',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+        }}
       >
+        {/* Gradient border bottom */}
+        <div className="absolute bottom-0 left-0 right-0 h-px pointer-events-none"
+          style={{ background: 'linear-gradient(90deg, transparent 0%, #2a2a2a 20%, #3B4EC4 50%, #2a2a2a 80%, transparent 100%)' }} />
+        {/* Inner glow — sits just below nav */}
+        <div className="absolute bottom-0 left-1/2 pointer-events-none"
+          style={{ width: 400, height: 60, transform: 'translate(-50%, 50%)',
+            background: 'radial-gradient(ellipse, rgba(107,127,232,0.06) 0%, transparent 70%)', zIndex: -1 }} />
+
         <div className="flex items-center gap-3">
-          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#3B4EC4] to-[#6B7FE8] flex items-center justify-center ring-1 ring-[#6B7FE8]/30">
-            <Zap size={14} className="text-white" />
+          {/* Logo with glow ring */}
+          <div className="relative">
+            <div className="absolute inset-0 rounded-lg"
+              style={{ background: 'rgba(107,127,232,0.25)', filter: 'blur(6px)', transform: 'scale(1.3)' }} />
+            <div className="relative w-7 h-7 rounded-lg bg-gradient-to-br from-[#3B4EC4] to-[#818cf8] flex items-center justify-center">
+              <Zap size={14} className="text-white" />
+            </div>
           </div>
-          <span style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700, color: '#FFFFFF', letterSpacing: '-0.02em' }}>
+
+          {/* Brand name with gradient */}
+          <span style={{
+            fontFamily: 'Inter, sans-serif',
+            fontWeight: 700,
+            letterSpacing: '-0.03em',
+            background: 'linear-gradient(90deg, #ffffff 0%, #a5b4fc 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+            display: 'inline-block',
+          }}>
             AutoMend
           </span>
-          <span className="text-xs font-mono px-2 py-0.5 rounded-full" style={{ background: '#1A1A1A', color: '#666', border: '1px solid #2a2a2a' }}>v1.0</span>
+
+          <span className="text-xs font-mono px-2 py-0.5 rounded-full" style={{ background: '#141414', color: '#555', border: '1px solid #222' }}>v1.0</span>
         </div>
+
         <button
           onClick={() => setShowModal(true)}
-          className="flex items-center gap-2 px-4 py-2 text-sm font-bold transition-colors"
-          style={{ background: '#E8935A', color: '#000000', borderRadius: 10 }}
-          onMouseEnter={e => (e.currentTarget.style.background = '#d4804a')}
-          onMouseLeave={e => (e.currentTarget.style.background = '#E8935A')}
+          className="flex items-center gap-2 px-4 py-2 text-sm font-bold transition-all"
+          style={{ background: '#E8935A', color: '#000000', borderRadius: 10, boxShadow: '0 0 16px rgba(232,147,90,0.30)' }}
+          onMouseEnter={e => { e.currentTarget.style.background = '#d4804a'; e.currentTarget.style.boxShadow = '0 0 24px rgba(232,147,90,0.50)' }}
+          onMouseLeave={e => { e.currentTarget.style.background = '#E8935A'; e.currentTarget.style.boxShadow = '0 0 16px rgba(232,147,90,0.30)' }}
         >
           <Plus size={15} /> New Project
         </button>
       </header>
 
       {/* ── Hero ────────────────────────────────────────────────────── */}
-      <div className="px-6 pt-14 pb-8 max-w-5xl mx-auto text-center relative overflow-hidden">
+      <div className="px-6 pt-14 pb-8 max-w-5xl mx-auto text-center relative" style={{ zIndex: 1 }}>
 
         {/* Glow 1 — periwinkle, centered behind heading */}
         <div
@@ -500,10 +577,10 @@ export default function HomePage() {
         <motion.h1
           className="mb-0"
           style={{
-            fontFamily: 'Inter, sans-serif',
-            fontSize: 56,
+            fontFamily: '"Plus Jakarta Sans", sans-serif',
+            fontSize: 76,
             fontWeight: 800,
-            letterSpacing: '-0.05em',
+            letterSpacing: '-0.04em',
             lineHeight: 1.0,
             color: '#FFFFFF',
             position: 'relative',
@@ -514,7 +591,8 @@ export default function HomePage() {
           From Alert to Action<br />
           <span style={{ color: '#E8935A' }}>in </span>
           <span style={{
-            background: 'linear-gradient(90deg, #6B7FE8, #C084FC)',
+            display: 'inline-block',
+            background: 'linear-gradient(100deg, #818cf8 0%, #a78bfa 40%, #e879f9 100%)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             backgroundClip: 'text',
@@ -523,52 +601,52 @@ export default function HomePage() {
 
         <motion.p
           style={{
-            color: '#6B7588',
-            fontSize: 15,
+            color: '#555e6e',
+            fontSize: 16,
             fontWeight: 400,
-            marginTop: 20,
-            marginBottom: 40,
+            marginTop: 24,
+            marginBottom: 44,
             position: 'relative',
             zIndex: 1,
           }}
-          className="max-w-md mx-auto leading-relaxed"
+          className="max-w-lg mx-auto leading-relaxed"
           variants={fadeUp} initial="hidden" animate="visible" custom={2}
         >
-          AutoMend detects anomalies in your ML models and triggers the right remediation
-          workflow with no manual intervention needed.
+          AutoMend detects anomalies in your ML models and triggers
+          the right remediation workflow with <span style={{ color: '#8892a4' }}>no manual intervention needed.</span>
         </motion.p>
 
-        {/* Stats — unified strip */}
+        {/* Stats — 3 separate cards */}
         <motion.div
-          className="inline-flex justify-center overflow-hidden"
-          style={{
-            background: 'linear-gradient(145deg, #141414 0%, #0f0f0f 100%)',
-            border: '1px solid #1f1f1f',
-            borderRadius: 16,
-            position: 'relative',
-            zIndex: 1,
-          }}
+          className="inline-flex justify-center gap-3"
+          style={{ position: 'relative', zIndex: 1 }}
           variants={fadeUp} initial="hidden" animate="visible" custom={3}
         >
           {[
-            { label: 'Active',    value: counts.active, color: '#E8935A', divider: true },
-            { label: 'Workflows', value: projects.reduce((acc, p) => acc + (p.workflows?.length || 0), 0), color: '#6B7FE8', divider: true },
-            { label: 'Draft',     value: counts.draft,  color: '#444444', divider: false },
+            { label: 'Active',    value: counts.active,
+              color: '#4ADE80', border: 'rgba(74,222,128,0.20)' },
+            { label: 'Workflows', value: projects.reduce((acc, p) => acc + (p.workflows?.length || 0), 0),
+              color: '#818cf8', border: 'rgba(129,140,248,0.20)' },
+            { label: 'Draft',     value: counts.draft,
+              color: '#555',    border: '#222' },
           ].map(stat => (
             <div
               key={stat.label}
-              className="flex flex-col items-center gap-1 px-8 py-3 min-w-[90px]"
-              style={{ borderRight: stat.divider ? '1px solid #1f1f1f' : 'none' }}
+              className="flex flex-col items-center gap-1.5 px-7 py-4 rounded-2xl min-w-[100px]"
+              style={{
+                background: '#111111',
+                border: `1px solid ${stat.border}`,
+              }}
             >
-              <span className="text-2xl font-bold" style={{ color: stat.color }}>{stat.value}</span>
-              <span style={{ fontSize: 10, color: '#444444', letterSpacing: '0.1em' }} className="uppercase">{stat.label}</span>
+              <span className="text-2xl font-bold tabular-nums" style={{ color: stat.color }}>{stat.value}</span>
+              <span style={{ fontSize: 10, color: '#444', letterSpacing: '0.12em' }} className="uppercase">{stat.label}</span>
             </div>
           ))}
         </motion.div>
       </div>
 
       {/* ── Main ────────────────────────────────────────────────────── */}
-      <main className="max-w-6xl mx-auto px-6 pb-14">
+      <main className="max-w-6xl mx-auto px-6 pb-14" style={{ position: 'relative', zIndex: 1 }}>
 
         <div className="flex items-center gap-3 mb-6 flex-wrap">
           <div
@@ -623,17 +701,68 @@ export default function HomePage() {
 
             <button
               onClick={() => setShowModal(true)}
-              className="rounded-xl p-5 flex flex-col items-center justify-center gap-3 text-[#333] min-h-[180px] transition-all duration-200 hover:text-[#E8935A] hover:-translate-y-1"
-              style={{ border: '1px dashed #2a2a2a' }}
-              onMouseEnter={e => (e.currentTarget.style.borderColor = '#E8935A80')}
-              onMouseLeave={e => (e.currentTarget.style.borderColor = '#2a2a2a')}
+              className="add-card group rounded-xl flex flex-col items-center justify-center gap-4 min-h-[180px] relative overflow-hidden transition-all duration-300 hover:-translate-y-1 w-full"
+              style={{ background: 'transparent' }}
+              onMouseEnter={e => {
+                const svg = e.currentTarget.querySelector<SVGElement>('.add-border')
+                if (svg) svg.style.opacity = '1'
+                const bg = e.currentTarget.querySelector<HTMLElement>('.add-bg')
+                if (bg) bg.style.opacity = '1'
+              }}
+              onMouseLeave={e => {
+                const svg = e.currentTarget.querySelector<SVGElement>('.add-border')
+                if (svg) svg.style.opacity = '0.4'
+                const bg = e.currentTarget.querySelector<HTMLElement>('.add-bg')
+                if (bg) bg.style.opacity = '0'
+              }}
             >
-              <div className="w-12 h-12 rounded-2xl border border-dashed border-current flex items-center justify-center transition-all duration-200 hover:scale-110">
+              {/* SVG animated dashed border */}
+              <svg className="add-border absolute inset-0 w-full h-full rounded-xl pointer-events-none"
+                style={{ opacity: 0.4, transition: 'opacity 0.3s ease' }}
+              >
+                <rect
+                  x="1" y="1"
+                  width="calc(100% - 2px)" height="calc(100% - 2px)"
+                  rx="11" ry="11"
+                  fill="none"
+                  stroke="url(#dashGrad)"
+                  strokeWidth="1.5"
+                  strokeDasharray="6 4"
+                  style={{ animation: 'dash-march 1s linear infinite' }}
+                />
+                <defs>
+                  <linearGradient id="dashGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%"   stopColor="#6B7FE8" />
+                    <stop offset="50%"  stopColor="#E8935A" />
+                    <stop offset="100%" stopColor="#a78bfa" />
+                  </linearGradient>
+                </defs>
+              </svg>
+
+              {/* Hover background bloom */}
+              <div className="add-bg absolute inset-0 rounded-xl pointer-events-none"
+                style={{
+                  background: 'radial-gradient(ellipse 80% 70% at 50% 100%, rgba(107,127,232,0.06) 0%, transparent 70%)',
+                  opacity: 0,
+                  transition: 'opacity 0.3s ease',
+                }}
+              />
+
+              {/* Plus icon with pulse */}
+              <div
+                className="add-card-plus relative w-12 h-12 rounded-2xl flex items-center justify-center"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(107,127,232,0.15) 0%, rgba(232,147,90,0.10) 100%)',
+                  border: '1px solid rgba(107,127,232,0.25)',
+                  color: '#6B7FE8',
+                }}
+              >
                 <Plus size={20} />
               </div>
-              <div className="text-center">
-                <p className="text-sm font-medium">New Project</p>
-                <p className="text-xs opacity-60 mt-0.5">Add a model to monitor</p>
+
+              <div className="text-center relative">
+                <p className="text-sm font-semibold text-[#555] group-hover:text-white transition-colors duration-300">New Project</p>
+                <p className="text-xs text-[#333] group-hover:text-[#666] mt-0.5 transition-colors duration-300">Add a model to monitor</p>
               </div>
             </button>
           </div>
