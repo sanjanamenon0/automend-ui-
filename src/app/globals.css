@@ -1,65 +1,125 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ─── Design tokens ───────────────────────────────────────────── */
+:root {
+  /* Primary spectrum */
+  --c-indigo:     #1A1B4B;
+  --c-royal:      #3B4EC4;
+  --c-periwinkle: #6B7FE8;
+  --c-saffron:    #E0935A;
+  --c-mango:      #F4B97A;
+
+  /* Accent tones */
+  --c-teal:       #1ABCD8;
+  --c-green:      #44ADE8;  /* used for active */
+  --c-success:    #44DE88;
+  --c-coral:      #E85A68;
+  --c-violet:     #C086FC;
+  --c-lavender:   #D4A8EB;
+
+  /* Neutrals */
+  --c-ink:        #000F1A;
+  --c-surface:    #1A1F2E;
+  --c-slate:      #2A3248;
+  --c-muted:      #607588;
+  --c-border:     #E0E4EA18;
+  --c-snow:       #F4F5F8;
+}
+
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  background: #0D0F1A;
-  color: #F4F5F8;
-  font-family: 'DM Sans', sans-serif;
+  background: var(--c-ink);
+  color: var(--c-snow);
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
+/* Display font — Manrope: geometric, premium, not stretched */
+.font-display {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  font-stretch: normal;
+}
+
+/* ─── Backgrounds ─────────────────────────────────────────────── */
 .grid-bg {
   background-image:
-    linear-gradient(rgba(107, 127, 232, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(107, 127, 232, 0.04) 1px, transparent 1px);
-  background-size: 40px 40px;
-  background-color: #0D0F1A;
+    linear-gradient(rgba(59, 78, 196, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(59, 78, 196, 0.07) 1px, transparent 1px);
+  background-size: 36px 36px;
+  background-color: var(--c-ink);
 }
 
-/* Indigo to saffron — hero / pitch deck cover */
+/* Hero — indigo to saffron radial bloom */
 .hero-gradient {
   background:
-    radial-gradient(ellipse 80% 60% at 50% -10%, rgba(26, 27, 75, 0.8) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 50% at 90% 20%, rgba(232, 147, 90, 0.12) 0%, transparent 50%),
-    radial-gradient(ellipse 40% 40% at 10% 80%, rgba(107, 127, 232, 0.08) 0%, transparent 50%);
+    radial-gradient(ellipse 90% 70% at 50% -15%, rgba(26, 27, 75, 0.95) 0%, transparent 65%),
+    radial-gradient(ellipse 55% 45% at 85% 15%, rgba(224, 147, 90, 0.13) 0%, transparent 55%),
+    radial-gradient(ellipse 45% 45% at 15% 85%, rgba(107, 127, 232, 0.12) 0%, transparent 55%);
 }
 
-/* Saffron to periwinkle gradient text */
+/* ─── Gradient text — indigo to saffron (per spec) ───────────── */
 .gradient-text {
-  background: linear-gradient(135deg, #E8935A 0%, #F4B97A 50%, #6B7FE8 100%);
+  background: linear-gradient(135deg, #E0935A 0%, #F4B97A 45%, #6B7FE8 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-/* Card status borders */
-.card-active { border-top: 2px solid #4ADE80; }
-.card-paused { border-top: 2px solid #E8935A; }
-.card-draft  { border-top: 2px solid #2A3248; }
-
-/* Glass nav */
-.glass {
-  background: rgba(13, 15, 26, 0.92);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+/* Royal blue to periwinkle — for secondary highlights */
+.gradient-text-blue {
+  background: linear-gradient(135deg, #3B4EC4 0%, #6B7FE8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
+/* ─── Card status borders ─────────────────────────────────────── */
+.card-active { border-top: 2px solid #44DE88; }
+.card-paused { border-top: 2px solid #E0935A; }
+.card-draft  { border-top: 2px solid #2A3248; }
+
+/* ─── Glass nav ───────────────────────────────────────────────── */
+.glass {
+  background: rgba(0, 15, 26, 0.88);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+}
+
+/* ─── Animations ──────────────────────────────────────────────── */
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-4px); }
+  50%       { transform: translateY(-4px); }
 }
 .float { animation: float 4s ease-in-out infinite; }
 
-/* ReactFlow */
-.react-flow__background { background: #0D0F1A; }
-.react-flow__edge-path { stroke: #E8935A; stroke-width: 2; }
+/* CTA glow — saffron pulse */
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 10px rgba(224, 147, 90, 0.40), 0 4px 18px rgba(224, 147, 90, 0.18); }
+  50%       { box-shadow: 0 0 26px rgba(224, 147, 90, 0.70), 0 4px 30px rgba(224, 147, 90, 0.35); }
+}
+.btn-glow { animation: glow-pulse 2.4s ease-in-out infinite; }
+
+/* Subtle shimmer on card hover */
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+
+/* ─── ReactFlow ───────────────────────────────────────────────── */
+.react-flow__background { background: var(--c-ink); }
+.react-flow__edge-path  { stroke: #E0935A; stroke-width: 2; }
 .react-flow__handle {
-  background: #E8935A !important;
-  border: 2px solid #0D0F1A !important;
+  background: #E0935A !important;
+  border: 2px solid var(--c-ink) !important;
   width: 10px !important;
   height: 10px !important;
 }
@@ -71,12 +131,13 @@ body {
 .react-flow__controls-button {
   background: #1A1F2E;
   border-bottom: 1px solid #2A3248;
-  color: #6B7588;
+  color: #607588;
 }
 .react-flow__controls-button:hover { background: #2A3248; color: #F4F5F8; }
 .react-flow__minimap { background: #1A1F2E !important; border: 1px solid #2A3248; border-radius: 8px; }
 
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: #0D0F1A; }
+/* ─── Scrollbar ───────────────────────────────────────────────── */
+::-webkit-scrollbar       { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: var(--c-ink); }
 ::-webkit-scrollbar-thumb { background: #2A3248; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #E8935A; }
+::-webkit-scrollbar-thumb:hover { background: #E0935A; }
