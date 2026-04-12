@@ -24,7 +24,7 @@ export function NodeConfigPanel({ node, onClose, onUpdateConfig }: NodeConfigPan
   const config = node.data.config || {}
 
   return (
-    <div className="w-64 bg-[#0D0F1A] border-l border-[rgba(255,255,255,0.08)] flex flex-col h-full">
+    <div className="w-64 bg-[#080808] border-l border-[rgba(255,255,255,0.08)] flex flex-col h-full">
       <div className="flex items-center justify-between px-4 py-3 border-b border-[rgba(255,255,255,0.08)]">
         <div className="flex items-center gap-2">
           <Settings size={13} style={{ color: node.data.color }} />
@@ -45,7 +45,7 @@ export function NodeConfigPanel({ node, onClose, onUpdateConfig }: NodeConfigPan
                 defaultValue={config[field.label] || ''}
                 placeholder={field.placeholder}
                 onChange={e => onUpdateConfig(node.id, { ...config, [field.label]: e.target.value })}
-                className="w-full bg-[#0D0F1A] border border-[rgba(255,255,255,0.08)] rounded-lg px-3 py-2 text-xs text-white placeholder-[#3a4a6b] focus:outline-none focus:border-[#2ec4b6] transition-colors font-mono"
+                className="w-full bg-[#080808] border border-[rgba(255,255,255,0.08)] rounded-lg px-3 py-2 text-xs text-white placeholder-[#3a4a6b] focus:outline-none focus:border-[#2ec4b6] transition-colors font-mono"
               />
             </div>
           ))

@@ -162,8 +162,8 @@ export default function WorkflowPage({ params }: { params: { id: string } }) {
   const categories = [...new Set(NODE_TYPES_CONFIG.map(n => n.category))]
 
   return (
-    <div className="h-screen flex flex-col bg-[#0D0F1A] overflow-hidden">
-      <header className="flex items-center justify-between px-4 py-2.5 border-b border-[rgba(255,255,255,0.08)] bg-[#0D0F1A] z-10 shrink-0">
+    <div className="h-screen flex flex-col bg-[#080808] overflow-hidden">
+      <header className="flex items-center justify-between px-4 py-2.5 border-b border-[rgba(255,255,255,0.08)] bg-[#080808] z-10 shrink-0">
         <div className="flex items-center gap-3">
           <button onClick={() => { window.location.href = '/' }} className="text-[#7b8db0] hover:text-white transition-colors p-1 rounded hover:bg-[rgba(255,255,255,0.08)]">
             <ArrowLeft size={16} />
@@ -194,7 +194,7 @@ export default function WorkflowPage({ params }: { params: { id: string } }) {
       </header>
 
       <div className="flex flex-1 overflow-hidden">
-        <div className={`${leftCollapsed ? 'w-10' : 'w-56'} transition-all duration-200 border-r border-[rgba(255,255,255,0.08)] flex flex-col bg-[#0D0F1A] shrink-0`}>
+        <div className={`${leftCollapsed ? 'w-10' : 'w-56'} transition-all duration-200 border-r border-[rgba(255,255,255,0.08)] flex flex-col bg-[#080808] shrink-0`}>
           {leftCollapsed ? (
             <button onClick={() => setLeftCollapsed(false)} className="flex items-center justify-center h-full text-[#7b8db0] hover:text-white transition-colors">
               <ChevronRight size={16} />
@@ -230,7 +230,7 @@ export default function WorkflowPage({ params }: { params: { id: string } }) {
                   value={workflowName}
                   onChange={e => setWorkflowName(e.target.value)}
                   placeholder="Workflow name"
-                  className="w-full bg-[#0D0F1A] border border-[rgba(255,255,255,0.08)] rounded-md px-2 py-1.5 text-xs text-white placeholder-[#3a4a6b] focus:outline-none focus:border-[#2ec4b6] transition-colors"
+                  className="w-full bg-[#080808] border border-[rgba(255,255,255,0.08)] rounded-md px-2 py-1.5 text-xs text-white placeholder-[#3a4a6b] focus:outline-none focus:border-[#2ec4b6] transition-colors"
                 />
               </div>
 
@@ -280,7 +280,7 @@ export default function WorkflowPage({ params }: { params: { id: string } }) {
           >
             <Background variant={BackgroundVariant.Dots} gap={20} size={1} color="rgba(255,255,255,0.06)" />
             <Controls />
-            <MiniMap nodeColor={n => (n.data as { color: string })?.color || '#1e2d4a'} maskColor="rgba(13, 15, 26, 0.8)" />
+            <MiniMap nodeColor={n => (n.data as { color: string })?.color || '#1e2d4a'} maskColor="rgba(8, 8, 8, 0.8)" />
           </ReactFlow>
           {nodes.length === 0 && (
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
@@ -295,7 +295,7 @@ export default function WorkflowPage({ params }: { params: { id: string } }) {
           )}
         </div>
 
-        <div className="w-72 border-l border-[rgba(255,255,255,0.08)] flex flex-col bg-[#0D0F1A] shrink-0">
+        <div className="w-72 border-l border-[rgba(255,255,255,0.08)] flex flex-col bg-[#080808] shrink-0">
           {selectedNode && (
             <NodeConfigPanel node={selectedNode} onClose={() => setSelectedNode(null)} onUpdateConfig={updateNodeConfig} />
           )}
@@ -308,7 +308,7 @@ export default function WorkflowPage({ params }: { params: { id: string } }) {
             <div className="flex-1 overflow-y-auto p-3 space-y-3">
               {chatMessages.map((msg, i) => (
                 <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                  <div className={`max-w-[85%] rounded-xl px-3 py-2 text-xs leading-relaxed ${msg.role === 'user' ? 'bg-[#2ec4b6]/20 text-[#2ec4b6] border border-[#2ec4b6]/20' : 'bg-[#1e2d4a] text-[#c0cce0]'}`}>
+                  <div className={`max-w-[85%] rounded-xl px-3 py-2 text-xs leading-relaxed ${msg.role === 'user' ? 'bg-[#2ec4b6]/20 text-[#2ec4b6] border border-[#2ec4b6]/20' : 'bg-[#111111] text-[#c0cce0]'}`}>
                     {msg.text}
                   </div>
                 </div>
@@ -331,7 +331,7 @@ export default function WorkflowPage({ params }: { params: { id: string } }) {
                   onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleChat() } }}
                   placeholder="Describe your workflow..."
                   rows={2}
-                  className="flex-1 bg-[#0D0F1A] border border-[rgba(255,255,255,0.08)] rounded-lg px-3 py-2 text-xs text-white placeholder-[#3a4a6b] focus:outline-none focus:border-[#2ec4b6] transition-colors resize-none"
+                  className="flex-1 bg-[#080808] border border-[rgba(255,255,255,0.08)] rounded-lg px-3 py-2 text-xs text-white placeholder-[#3a4a6b] focus:outline-none focus:border-[#2ec4b6] transition-colors resize-none"
                 />
                 <button onClick={handleChat} disabled={!chatInput.trim()} className="px-3 bg-[#2ec4b6] text-[#0a0e1a] rounded-lg hover:bg-[#25a99d] disabled:opacity-40 disabled:cursor-not-allowed transition-colors self-end py-2">
                   <Send size={13} />
