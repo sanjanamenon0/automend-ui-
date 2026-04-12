@@ -94,6 +94,21 @@ body {
   -webkit-backdrop-filter: blur(24px) saturate(160%);
 }
 
+/* ─── Live dot pulse ──────────────────────────────────────────── */
+@keyframes live-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+.live-dot {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #4ADE80;
+  animation: live-pulse 2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
 /* ─── Animations ──────────────────────────────────────────────── */
 @keyframes float {
   0%, 100% { transform: translateY(0px); }

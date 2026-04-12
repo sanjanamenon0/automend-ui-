@@ -21,24 +21,30 @@ const scaleIn: Variants = {
 }
 
 // ─── Status config ────────────────────────────────────────────────────────────
-const STATUS_STYLES: Record<ProjectStatus, { dot: string; badge: string; label: string; accentGradient: string }> = {
+const STATUS_STYLES: Record<ProjectStatus, { dot: string; badge: string; label: string; accentGradient: string; hoverShadow: string; glowColor: string }> = {
   active: {
     dot:            'bg-[#4ADE80]',
     badge:          'bg-[#0a2e1a] text-[#4ADE80] border-[#1a4a2a]',
     label:          'Active',
-    accentGradient: 'linear-gradient(90deg, transparent, #4ADE80, transparent)',
+    accentGradient: 'linear-gradient(90deg, transparent, #4ADE80 50%, transparent)',
+    hoverShadow:    '0 8px 40px rgba(74,222,128,0.18), 0 2px 12px rgba(74,222,128,0.10)',
+    glowColor:      'rgba(74,222,128,0.10)',
   },
   paused: {
     dot:            'bg-[#E8935A]',
     badge:          'bg-[#2e1a0a] text-[#E8935A] border-[#4a2a1a]',
     label:          'Paused',
-    accentGradient: 'linear-gradient(90deg, transparent, #E8935A, transparent)',
+    accentGradient: 'linear-gradient(90deg, transparent, #E8935A 50%, transparent)',
+    hoverShadow:    '0 8px 40px rgba(232,147,90,0.18), 0 2px 12px rgba(232,147,90,0.10)',
+    glowColor:      'rgba(232,147,90,0.10)',
   },
   draft: {
     dot:            'bg-[#444444]',
     badge:          'bg-[#1a1a1a] text-[#666] border-[#2a2a2a]',
     label:          'Draft',
-    accentGradient: 'linear-gradient(90deg, transparent, #444444, transparent)',
+    accentGradient: 'linear-gradient(90deg, transparent, #444444 50%, transparent)',
+    hoverShadow:    '0 8px 40px rgba(100,100,100,0.12), 0 2px 12px rgba(100,100,100,0.06)',
+    glowColor:      'rgba(100,100,100,0.06)',
   },
 }
 
@@ -206,7 +212,7 @@ function WorkflowsPopover({ project, anchorEl, onClose }: {
   )
 }
 
-// ─── Project Card — plain div, CSS-only hover (no framer layout issues) ───────
+// ─── Project Card ─────────────────────────────────────────────────────────────
 function ProjectCard({ project, onDelete, onRename, onStatusChange }: {
   project: Project
   onDelete: () => void
@@ -221,11 +227,37 @@ function ProjectCard({ project, onDelete, onRename, onStatusChange }: {
 
   return (
     <div
-      className="relative group rounded-xl p-5 transition-all duration-200 hover:-translate-y-1"
-      style={{ background: '#111111', border: '1px solid #1f1f1f' }}
-      onMouseEnter={e => (e.currentTarget.style.borderColor = '#2a2a2a')}
-      onMouseLeave={e => (e.currentTarget.style.borderColor = '#1f1f1f')}
+      className="relative group rounded-xl p-5"
+      style={{
+        background: 'linear-gradient(145deg, #141414 0%, #0f0f0f 100%)',
+        border: '1px solid #1f1f1f',
+        transition: 'border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease',
+      }}
+      onMouseEnter={e => {
+        e.currentTarget.style.borderColor = '#2a2a2a'
+        e.currentTarget.style.transform = 'translateY(-3px)'
+        e.currentTarget.style.boxShadow = s.hoverShadow
+        const glow = e.currentTarget.querySelector<HTMLElement>('.card-glow')
+        if (glow) glow.style.opacity = '1'
+      }}
+      onMouseLeave={e => {
+        e.currentTarget.style.borderColor = '#1f1f1f'
+        e.currentTarget.style.transform = 'translateY(0)'
+        e.currentTarget.style.boxShadow = 'none'
+        const glow = e.currentTarget.querySelector<HTMLElement>('.card-glow')
+        if (glow) glow.style.opacity = '0'
+      }}
     >
+      {/* Hover glow bloom — status-coloured radial behind card */}
+      <div
+        className="card-glow absolute inset-0 rounded-xl pointer-events-none"
+        style={{
+          background: `radial-gradient(ellipse 80% 60% at 50% 100%, ${s.glowColor}, transparent)`,
+          opacity: 0,
+          transition: 'opacity 0.3s ease',
+        }}
+      />
+
       {/* Status accent line */}
       <div
         className="absolute top-0 left-0 right-0 h-px rounded-t-xl"
@@ -299,7 +331,11 @@ function ProjectCard({ project, onDelete, onRename, onStatusChange }: {
 
       {/* Meta row */}
       <div className="flex items-center gap-4 text-xs mb-4">
-        <span className="flex items-center gap-1.5 px-2 py-1 rounded-lg" style={{ background: '#1a1a1a', border: '1px solid #2a2a2a' }}>
+        {/* Workflows pill */}
+        <span
+          className="flex items-center gap-1.5 px-2 py-1"
+          style={{ background: '#1a1a1a', border: '1px solid #2a2a2a', borderRadius: 999, fontSize: 11 }}
+        >
           <GitBranch size={10} className="text-[#6B7FE8]" />
           <span className="text-[#6B7FE8]">{project.workflows?.length || 0}</span>
           <span className="text-[#555]">workflow{(project.workflows?.length || 0) !== 1 ? 's' : ''}</span>
@@ -410,7 +446,7 @@ export default function HomePage() {
       {/* ── Nav ─────────────────────────────────────────────────────── */}
       <header
         className="px-6 py-3 flex items-center justify-between sticky top-0 z-10"
-        style={{ background: 'rgba(8,8,8,0.95)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', borderBottom: '1px solid #1a1a1a' }}
+        style={{ background: 'rgba(8,8,8,0.95)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', borderBottom: '1px solid #1f1f1f' }}
       >
         <div className="flex items-center gap-3">
           <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#3B4EC4] to-[#6B7FE8] flex items-center justify-center ring-1 ring-[#6B7FE8]/30">
@@ -423,7 +459,7 @@ export default function HomePage() {
         </div>
         <button
           onClick={() => setShowModal(true)}
-          className="flex items-center gap-2 px-4 py-2 text-sm font-bold rounded-xl transition-colors"
+          className="flex items-center gap-2 px-4 py-2 text-sm font-bold transition-colors"
           style={{ background: '#E8935A', color: '#000000', borderRadius: 10 }}
           onMouseEnter={e => (e.currentTarget.style.background = '#d4804a')}
           onMouseLeave={e => (e.currentTarget.style.background = '#E8935A')}
@@ -433,12 +469,47 @@ export default function HomePage() {
       </header>
 
       {/* ── Hero ────────────────────────────────────────────────────── */}
-      <div className="px-6 pt-14 pb-8 max-w-5xl mx-auto text-center">
+      <div className="px-6 pt-14 pb-8 max-w-5xl mx-auto text-center relative overflow-hidden">
+
+        {/* Glow 1 — periwinkle, centered behind heading */}
+        <div
+          className="absolute left-1/2 pointer-events-none"
+          style={{
+            top: 0,
+            width: 600,
+            height: 300,
+            transform: 'translateX(-50%)',
+            background: 'radial-gradient(ellipse, rgba(107,127,232,0.12) 0%, transparent 70%)',
+            zIndex: 0,
+          }}
+        />
+        {/* Glow 2 — saffron, slightly lower and offset right */}
+        <div
+          className="absolute pointer-events-none"
+          style={{
+            top: 120,
+            left: '55%',
+            width: 400,
+            height: 200,
+            transform: 'translateX(-50%)',
+            background: 'radial-gradient(ellipse, rgba(232,147,90,0.07) 0%, transparent 70%)',
+            zIndex: 0,
+          }}
+        />
 
         <motion.h1
-          className="mb-5"
-          style={{ fontFamily: 'Inter, sans-serif', fontSize: 56, fontWeight: 800, letterSpacing: '-0.05em', lineHeight: 1.0, color: '#FFFFFF' }}
-          variants={fadeUp} initial="hidden" animate="visible" custom={0}
+          className="mb-0"
+          style={{
+            fontFamily: 'Inter, sans-serif',
+            fontSize: 56,
+            fontWeight: 800,
+            letterSpacing: '-0.05em',
+            lineHeight: 1.0,
+            color: '#FFFFFF',
+            position: 'relative',
+            zIndex: 1,
+          }}
+          variants={fadeUp} initial="hidden" animate="visible" custom={1}
         >
           From Alert to Action<br />
           <span style={{ color: '#E8935A' }}>in </span>
@@ -451,27 +522,43 @@ export default function HomePage() {
         </motion.h1>
 
         <motion.p
-          style={{ color: '#6B7588', fontSize: 15, fontWeight: 400 }}
+          style={{
+            color: '#6B7588',
+            fontSize: 15,
+            fontWeight: 400,
+            marginTop: 20,
+            marginBottom: 40,
+            position: 'relative',
+            zIndex: 1,
+          }}
           className="max-w-md mx-auto leading-relaxed"
-          variants={fadeUp} initial="hidden" animate="visible" custom={1}
+          variants={fadeUp} initial="hidden" animate="visible" custom={2}
         >
           AutoMend detects anomalies in your ML models and triggers the right remediation
           workflow with no manual intervention needed.
         </motion.p>
 
+        {/* Stats — unified strip */}
         <motion.div
-          className="flex gap-4 mt-8 justify-center flex-wrap"
-          variants={fadeUp} initial="hidden" animate="visible" custom={2}
+          className="inline-flex justify-center overflow-hidden"
+          style={{
+            background: 'linear-gradient(145deg, #141414 0%, #0f0f0f 100%)',
+            border: '1px solid #1f1f1f',
+            borderRadius: 16,
+            position: 'relative',
+            zIndex: 1,
+          }}
+          variants={fadeUp} initial="hidden" animate="visible" custom={3}
         >
           {[
-            { label: 'Active',    value: counts.active, color: '#E8935A' },
-            { label: 'Workflows', value: projects.reduce((acc, p) => acc + (p.workflows?.length || 0), 0), color: '#6B7FE8' },
-            { label: 'Draft',     value: counts.draft,  color: '#444444' },
+            { label: 'Active',    value: counts.active, color: '#E8935A', divider: true },
+            { label: 'Workflows', value: projects.reduce((acc, p) => acc + (p.workflows?.length || 0), 0), color: '#6B7FE8', divider: true },
+            { label: 'Draft',     value: counts.draft,  color: '#444444', divider: false },
           ].map(stat => (
             <div
               key={stat.label}
-              className="flex flex-col items-center gap-1 px-6 py-3 min-w-[90px] transition-all duration-200 hover:-translate-y-0.5"
-              style={{ background: '#111111', border: '1px solid #1f1f1f', borderRadius: 14 }}
+              className="flex flex-col items-center gap-1 px-8 py-3 min-w-[90px]"
+              style={{ borderRight: stat.divider ? '1px solid #1f1f1f' : 'none' }}
             >
               <span className="text-2xl font-bold" style={{ color: stat.color }}>{stat.value}</span>
               <span style={{ fontSize: 10, color: '#444444', letterSpacing: '0.1em' }} className="uppercase">{stat.label}</span>
@@ -536,8 +623,7 @@ export default function HomePage() {
 
             <button
               onClick={() => setShowModal(true)}
-              className="rounded-xl p-5 flex flex-col items-center justify-center gap-3 text-[#333] min-h-[180px]
-                transition-all duration-200 hover:text-[#E8935A] hover:-translate-y-1"
+              className="rounded-xl p-5 flex flex-col items-center justify-center gap-3 text-[#333] min-h-[180px] transition-all duration-200 hover:text-[#E8935A] hover:-translate-y-1"
               style={{ border: '1px dashed #2a2a2a' }}
               onMouseEnter={e => (e.currentTarget.style.borderColor = '#E8935A80')}
               onMouseLeave={e => (e.currentTarget.style.borderColor = '#2a2a2a')}
