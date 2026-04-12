@@ -24,8 +24,8 @@ export function NodeConfigPanel({ node, onClose, onUpdateConfig }: NodeConfigPan
   const config = node.data.config || {}
 
   return (
-    <div className="w-64 bg-[#111827] border-l border-[#1e2d4a] flex flex-col h-full">
-      <div className="flex items-center justify-between px-4 py-3 border-b border-[#1e2d4a]">
+    <div className="w-64 bg-[#0D0F1A] border-l border-[rgba(255,255,255,0.08)] flex flex-col h-full">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-[rgba(255,255,255,0.08)]">
         <div className="flex items-center gap-2">
           <Settings size={13} style={{ color: node.data.color }} />
           <span className="text-sm font-semibold text-white">{node.data.label}</span>
@@ -45,13 +45,13 @@ export function NodeConfigPanel({ node, onClose, onUpdateConfig }: NodeConfigPan
                 defaultValue={config[field.label] || ''}
                 placeholder={field.placeholder}
                 onChange={e => onUpdateConfig(node.id, { ...config, [field.label]: e.target.value })}
-                className="w-full bg-[#0a0e1a] border border-[#1e2d4a] rounded-lg px-3 py-2 text-xs text-white placeholder-[#3a4a6b] focus:outline-none focus:border-[#2ec4b6] transition-colors font-mono"
+                className="w-full bg-[#0D0F1A] border border-[rgba(255,255,255,0.08)] rounded-lg px-3 py-2 text-xs text-white placeholder-[#3a4a6b] focus:outline-none focus:border-[#2ec4b6] transition-colors font-mono"
               />
             </div>
           ))
         )}
       </div>
-      <div className="px-4 py-3 border-t border-[#1e2d4a]">
+      <div className="px-4 py-3 border-t border-[rgba(255,255,255,0.08)]">
         <p className="text-xs text-[#3a4a6b] font-mono">id: {node.id}</p>
       </div>
     </div>

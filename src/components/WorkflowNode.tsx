@@ -46,8 +46,8 @@ export function WorkflowNode({ id, data, selected }: NodeProps<NodeData>) {
       <div
         className="rounded-xl overflow-hidden"
         style={{
-          background: '#1A1F2E',
-          border: `1.5px solid ${selected ? data.color : '#2A3248'}`,
+          background: '#0D0F1A',
+          border: `1.5px solid ${selected ? data.color : 'rgba(255,255,255,0.08)'}`,
         }}
       >
         <div className="h-1" style={{ background: data.color }} />
